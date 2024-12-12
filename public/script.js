@@ -1,14 +1,14 @@
 function updateSeats() {
     const n = parseInt(document.getElementById('n').value);
     const seatsContainer = document.getElementById('seatsContainer');
-    
+
     seatsContainer.innerHTML = '';
 
     // Create input for each seat state
     for (let i = 0; i < n; i++) {
         const seatGroup = document.createElement('div');
         seatGroup.className = 'form-group';
-        
+
         const seatLabel = document.createElement('label');
         seatLabel.htmlFor = `seat-${i}`;
         seatLabel.innerText = `Seat ${i + 1} state`;
@@ -65,9 +65,9 @@ function updateColors() {
 }
 
 function calculatePaint() {
-    const k = parseInt(document.getElementById('k').value);  
-    const n = parseInt(document.getElementById('n').value); 
-    const m = parseInt(document.getElementById('m').value); 
+    const k = parseInt(document.getElementById('k').value);
+    const n = parseInt(document.getElementById('n').value);
+    const m = parseInt(document.getElementById('m').value);
 
     const seats = [];
     for (let i = 0; i < n; i++) {
@@ -88,8 +88,50 @@ function calculatePaint() {
     const result = main(input);
 
     const outputElement = document.getElementById('output');
-    outputElement.innerHTML = `Result: ${result}`;
+    if (result === -1) {
+        outputElement.innerHTML = `No solution found. Please check your input.`;
+    } else {
+        outputElement.innerHTML = `Result: ${result}`;
+    }
+
     document.getElementById('result').style.display = 'block';
+    }
+
+
+function showError(inputId, message) {
+    const inputElement = document.getElementById(inputId);
+    let errorElement = inputElement.nextElementSibling;
+
+    if (!errorElement || !errorElement.classList.contains('error-message')) {
+        errorElement = document.createElement('small');
+        errorElement.className = 'error-message';
+        errorElement.style.color = 'red';
+        inputElement.parentElement.appendChild(errorElement);
+    }
+
+    errorElement.textContent = message;
 }
 
+function clearErrors() {
+    document.querySelectorAll('.error-message').forEach(el => el.remove());
+}
 
+document.getElementById('n').onchange = function() {
+    const nValue = parseInt(this.value);
+    clearErrors();
+    if (nValue > 10) {
+        showError('n', 'The number of seats cannot be more than 10.');
+        this.value = 10;
+    }
+    updateSeats();
+};
+
+document.getElementById('m').onchange = function() {
+    const mValue = parseInt(this.value);
+    clearErrors();
+    if (mValue > 10) {
+        showError('m', 'The number of colors cannot be more than 10.');
+        this.value = 10;
+    }
+    updateColors();
+};
